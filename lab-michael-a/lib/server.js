@@ -19,6 +19,7 @@ app.use(morgan('dev'));
 
 
 app.use(require('../route/bar-routes.js'));
+app.use(require('../route/task-routes.js'));
 
 app.all('/api/*', (req,res,next)=> {
   res.sendStatus(404);
@@ -42,7 +43,7 @@ server.start = () => {
       });
       return;
     }
-    reject(new Error('server all read running'));
+    reject(new Error('server is running!!!'));
   });
 };
 
@@ -55,6 +56,6 @@ server.stop = () => {
         resolve();
       });
     }
-    reject(new Error('the server is not running'));
+    reject(new Error('the server is not running!!!'));
   });
 };
