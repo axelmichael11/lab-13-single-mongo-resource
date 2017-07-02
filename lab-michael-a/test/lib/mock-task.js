@@ -15,8 +15,8 @@ mockTask.createOne = () => {
   .then(bar => {
     result.bar = bar;
     return new Task({
-      content: faker.random.words(10),
-      bar: bar._id.toString(),
+      description: faker.random.words(10),
+      bars: bar._id.toString(),
     })
     .save();
   })
@@ -33,8 +33,8 @@ mockTask.createMany = (n) => {
     result.bar = bar;
     let taskSavePromises = new Array(n).fill(0)
       .map(() => new Task({
-        content: faker.random.words(10),
-        bar: bar._id.toString(),
+        description: faker.random.words(10),
+        bars: bar._id.toString(),
       }).save());
     return Promise.all(taskSavePromises);
   })

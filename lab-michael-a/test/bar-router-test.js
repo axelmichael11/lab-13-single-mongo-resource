@@ -32,7 +32,7 @@ describe('testing Bar routes', () => {
       return superagent.post(`${API_URL}/api/bars`)
       .send(barData)
       .then(res => {
-
+        console.log(res.body);
 
         expect(res.status).toEqual(200);
         expect(res.body._id).toExist();

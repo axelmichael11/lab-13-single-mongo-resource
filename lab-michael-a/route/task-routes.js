@@ -27,3 +27,15 @@ taskRouter.put('/api/tasks/:id', jsonParser, (req, res, next) => {
   .then(task => res.json(task))
   .catch(next);
 });
+
+taskRouter.get('/api/tasks/:id', (req, res, next) => {
+  // console.log('hit get /api/bars/:id');
+  // console.log(req.params.id);
+  // console.log('req.status',req.status);
+  Task.findById(req.params.id)
+  .then(task => {
+    res.json(task);
+    // console.log('this is the bar data',bar);
+  })
+  .catch(next);
+});
