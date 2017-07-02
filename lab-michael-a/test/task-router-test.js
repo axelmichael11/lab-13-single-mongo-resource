@@ -59,6 +59,8 @@ describe('testing /api/tasks', () => {
       expect(res.status).toEqual(400);
     });
     });
+
+
     it('should respond with a 400... because it has no body', () => {
       return superagent.post(`${API_URL}/api/tasks`)
       .send({
@@ -73,7 +75,6 @@ describe('testing /api/tasks', () => {
 
 
     it('should be a 409 becuase it has the same name property twice..', ()=>{
-      let tempBar;
       let tempTask;
       return mockTask.createOne()
       .then(data => {
@@ -96,16 +97,21 @@ describe('testing /api/tasks', () => {
   describe('testing PUT /api/tasks/:id', () => {
     it('should respond with the updated task', () => {
       let tempBar, tempTask;
+      console.log('HERE IS THE PUT START!^^^^^^^^');
       return mockTask.createOne()
-      .then(({task, bars}) => {
+      .then(({tasks, bars}) => {
         tempTask = bars;
-        tempBar = task;
-        return superagent.put(`${API_URL}/api/tasks/${tempTask._id.toString()}`)
-        .send({
-          description: 'updated',
-        });
+        tempBar = tasks;
+        console.log('this^^^^^^^^',this);
+        console.log('tempBar and tempTask^^^^^^',tempTask);
+        return superagent.put(`${API_URL}/api/tasks/${tempTask._id.toString()}`);
       })
+        .send({
+          description: 'updated'
+        })
       .then(res => {
+        console.log('this is the response!^^^^^^',res.body);
+        console.log('res.body.description^^^^^^',res.body.description);
         expect(res.status).toEqual(200);
         expect(res.body.description).toEqual('updated');
         expect(res.body._id).toEqual(tempTask._id);
@@ -119,9 +125,22 @@ describe('testing /api/tasks', () => {
     });
 
 
+    it('should be a 404 because it is a fake id, so not found!', ()=>{
+      let tempTask;
+      return mockTask.createOne()
+      .then(data => {
+        console.log('data', data);
+        tempBar = data.bar;
+        tempTask = data.task;
+        // console.log('this is tempBar in post request..^^^^',tempBar);
+        return superagent.put(`${API_URL}/api/tasks/349578320457fake`);
+      })
+      .then(res => {throw res})
+      .catch(res => {
+        expect(res.status).toEqual(404);
+      });
+    });
   });
-
-
 
 
 //GET REQUESTS
@@ -150,9 +169,49 @@ describe('testing /api/tasks', () => {
     });
 
 
+    it('should be a 404 because this profile is a fake profile, and shouldnt be in the database.', ()=>{
+      let tempTask, tempBar;
+      return mockTask.createOne()
+      .then(data => {
+        console.log('data', data);
+        tempBar = data.bar;
+        tempTask = data.task;
+        // console.log('this is tempBar in post request..^^^^',tempBar);
+        return superagent.get(`${API_URL}/api/tasks/097870720974975345fake`);
+      })
+      .then(res => {throw res})
+      .catch(res => {
+        expect(res.status).toEqual(404);
+      });
+    });
+
   });
 
+  //DELTE REQUEST
 
+  describe('test DELETE /api/tasks', () => {
+    it('should delete our tempTask...', () => {
+      let tempBar;
+      let tempTask;
+      return mockTask.createOne()
+      .then(data => {
+        tempTask = data.task;
+        tempBar = data.bar;
+        console.log('this is tempBar._id in get request..^^^^',tempTask._id.toString());
+        return superagent.delete(`${API_URL}/api/tasks/${tempTask._id}`);
+      })
+      .then(res => {throw res})
+      .catch(res => {
+        expect(res.status).toEqual(204);
+      });
+    });
 
-
+    it('should be a bad request, 404', () => {
+      return superagent.delete(`${API_URL}/api/bars/yeahhhhnooo`)
+      .catch(err => {
+        expect(err.status).toEqual(404);
+        console.log('im in the delete test');
+      });
+    });
+  });
 });

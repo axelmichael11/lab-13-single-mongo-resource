@@ -39,3 +39,13 @@ taskRouter.get('/api/tasks/:id', (req, res, next) => {
   })
   .catch(next);
 });
+
+taskRouter.delete('/api/tasks/:id', (req, res, next) => {
+
+  Task.findByIdAndRemove(req.params.id)
+  .find({})
+  .then(()=> res.sendStatus(204))
+  .catch(next);
+
+
+});
